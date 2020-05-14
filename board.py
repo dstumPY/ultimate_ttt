@@ -34,19 +34,19 @@ class Board:
             +---+---+---+---+---+---+---+---+---+
             | 1   2   3 |           |           |
             |   +   +   +   +   +   +   +   +   |
-positions-->| 4   5   6 |   table2  |    table3 |
+positions-->| 4   5   6 |   table2  |   table3  |
             |   +   +   +   +   +   +   +   +   |
             | 7   8   9 |           |           |
             +---+---+---+---+---+---+---+---+---+
             |           |           |           |
             |   +   +   +   +   +   +   +   +   |
-            |   table4  |   table5  |    table6 |
+            |   table4  |   table5  |   table6  |
             |   +   +   +   +   +   +   +   +   |
             |           |           |           |
             +---+---+---+---+---+---+---+---+---+
             |           |           |           |
             |   +   +   +   +   +   +   +   +   |
-            |   table7  |   table8  |    table9 |
+            |   table7  |   table8  |   table9  |
             |   +   +   +   +   +   +   +   +   |
             |           |           |           |
             +---+---+---+---+---+---+---+---+---+
@@ -62,62 +62,91 @@ positions-->| 4   5   6 |   table2  |    table3 |
                  the current state
     """
 
-    def __init__(self, board_dict: Dict = None, insertion_order_ls: List = None):
-        """Create a Board object by a given board_dict or initial 
-            with  zeros
+    def __init__(
+        self,
+        playerA: str,
+        playerB: str,
+        board_dict: Dict = None,
+        insertion_order: List = None,
+    ):
+        """Create a Board object. This initializer provides the function
+            to set up an empty board filled with zeros. In that case only
+            playerA and playerB as parameter input is required. It's
+            also possible to set up a given board. This requires a
+            non-empty insertion-order list.
         
-        Keyword Arguments:
-            board_dict {Dict} -- Dict which represents a Board with keys 
-                                 representing the table numbers (1 to 9)
-                                 and values as Dicts representing the 
-                                 positions and their value (default: {None})
-                                 Example:
-                                    board_dict = = {
-                                        1: {1: "X", 
-                                            2: 0, 
-                                            3: 0, 
-                                            4: 0, 
-                                            5: "X", 
-                                            6: 0, 
-                                            7: 0, 
-                                            8: 0, 
-                                            9: "X"
-                                        },
-                                        2: {i: 0 for i in range(1, 10)},
-                                        3: {i: 0 for i in range(1, 10)},
-                                        4: {i: 0 for i in range(1, 10)},
-                                        5: {i: 0 for i in range(1, 10)},
-                                        6: {i: 0 for i in range(1, 10)},
-                                        7: {i: 0 for i in range(1, 10)},
-                                        8: {i: 0 for i in range(1, 10)},
-                                        9: {i: 0 for i in range(1, 10)},
-                                    }
-            insertion_order_ls {List} -- Contains information about the order
-                                         the values were inserted by the players.
-                                         One insertion contains lists 
-                                            [table no, table pos, value] 
-                                         (default: {None})
+            Keyword Arguments:
+            playerA {str} -- player encoding for boards
+            playerB {str} -- player encoding for boards
+        
+            board_dict {Dict}       -- Dict which represents a Board with keys 
+                                        representing the table numbers (1 to 9)
+                                        and values as Dicts representing the 
+                                        positions and their value (default: {None})
+                                        Example:
+                                            board_dict = = {
+                                                1: {1: "X", 
+                                                    2: 0, 
+                                                    3: "O", 
+                                                    4: 0, 
+                                                    5: "X", 
+                                                    6: "O", 
+                                                    7: 0, 
+                                                    8: 0, 
+                                                    9: "X"
+                                                },
+                                                2: {i: 0 for i in range(1, 10)},
+                                                3: {i: 0 for i in range(1, 10)},
+                                                4: {i: 0 for i in range(1, 10)},
+                                                5: {i: 0 for i in range(1, 10)},
+                                                6: {i: 0 for i in range(1, 10)},
+                                                7: {i: 0 for i in range(1, 10)},
+                                                8: {i: 0 for i in range(1, 10)},
+                                                9: {i: 0 for i in range(1, 10)},
+                                            }
+                insertion_order {List} -- Contains information about the order
+                                        the values were inserted by the players.
+                                        One insertion contains lists 
+                                        [table no, table pos, value] 
+                                        (default: {None})
         """
         self.insertions = []
+        self.playerA = playerA
+        self.playerB = playerB
 
         # initialize the board with 0 values if no board_dict is given
         if board_dict is None:
             self.state = {i: {j: 0 for j in range(1, 10)} for i in range(1, 10)}
+            self.insertion_order = []
+            self.finished_tables = {tbl_no: 0 for tbl_no in range(1, 10)}
         else:
             # TODO: add exception for invalid board_dicts
             self.state = board_dict
-
-        if insertion_order_ls is None:
-            # TODO: add exception for invalid order actions
-            self.insertion_order = []
-        else:
-            self.insertion_order = insertion_order_ls
+            self.insertion_order = insertion_order
+            self.finished_tables = {tbl_no: 0 for tbl_no in range(1, 10)}
+            # update finished_tables
+            for tbl_no in range(1, 10):
+                if self.player_won_on_table(tbl_no, self.playerA):
+                    self.finished_tables[tbl_no] = self.playerA
+                    for tbl_pos in range(1, 10):
+                        self.state[tbl_no][tbl_pos] = self.playerA
+                elif self.player_won_on_table(tbl_no, self.playerB):
+                    self.finished_tables[tbl_no] = self.playerB
+                    for tbl_pos in range(1, 10):
+                        self.state[tbl_no][tbl_pos] = self.playerB
 
     @classmethod
-    def set_board(cls, board_dict: Dict):
-        return cls(board_dict=board_dict)
+    def set_board(cls, playerA: str, playerB: str, board_dict: Dict, insertion_order):
+        return cls(
+            playerA=playerA,
+            playerB=playerB,
+            board_dict=board_dict,
+            insertion_order=insertion_order,
+        )
 
     def print_board(self):
+        """ Print out the current board state
+        """
         x = self.state
         # x[1][1] = '1'
         # x[2][2] = '2'
@@ -180,17 +209,68 @@ positions-->| 4   5   6 |   table2  |    table3 |
                 )
                 print("+" + "---+" * 8 + "---+")
 
-    def is_legal_move(self, tbl_no: int, pos_no: int, val: str):
-        # board is already filled
-        if self.insertion_order:
-            # table number is equal to last move position number
-            if self.insertion_order[-1][1] == tbl_no:
+    def is_legal_move(self, player: str, tbl_no: int, pos_no: int, val: str):
+        # init condition if board is empty
+        if not self.insertion_order:
+            return True
+
+        # False when you try to insert in a finished table
+        if self.finished_tables[tbl_no] != 0:
+            return False
+
+        # if field is already used
+        if self.is_used_field(tbl_no, pos_no):
+            return False
+
+        if self.last_field_eq_table(tbl_no):
+
+            # insert in finished tbl
+            if self.is_finished_tbl(tbl_no):
+                return False
+            else:
                 return True
+
+        # when the current tbl_no is not equal to the field from last move it migth be
+        # a legal move if the required tbl to insert is already finished
+        else:
+            # must insert in finished tbl
+            if self.force_insert_in_finished_table():
+
+                # insert in finished tbl
+                if self.is_finished_tbl(tbl_no):
+                    return False
+                else:
+                    return True
+
             else:
                 return False
-        # board is empty
-        else:
+
+    def force_insert_in_finished_table(self) -> bool:
+        """Returns True if the last move forces user to do the next move into 
+            an already used tbl_no.
+        """
+        next_tbl = self.insertions[-1][1]
+        return self.finished_tables[next_tbl] is 1
+
+    def last_field_eq_table(self, tbl_no: int) -> bool:
+        return self.insertion_order[-1][1] is tbl_no
+
+    def is_finished_tbl(self, tbl_no: int) -> bool:
+        """ Returns True if the table is already fineshed, else False
+
+        Arguments:
+            tbl_no {int} -- table number to test
+
+        Returns:
+            bool -- Return value if the test table is already finished
+        """
+        if self.finished_tables[tbl_no] is 1:
             return True
+        else:
+            return False
+
+    def is_used_field(self, tbl_no: int, tbl_pos: int) -> bool:
+        return self.state[tbl_no][tbl_pos] is not 0
 
     def insert_at_pos(self, tbl_no: int, pos_no: int, val: str):
         if tbl_no not in range(1, 10):
