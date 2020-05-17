@@ -1,4 +1,5 @@
 from typing import Any, Dict, List
+from copy import deepcopy
 
 
 class Board:
@@ -135,6 +136,9 @@ positions-->| 4   5   6 |   table2  |   table3  |
                     for tbl_pos in range(1, 10):
                         self.state[tbl_no][tbl_pos] = self.playerB
 
+            # modify finished_tables
+            # tmp_dic = {tbl_no: }
+
     @classmethod
     def set_board(cls, playerA: str, playerB: str, board_dict: Dict, insertion_order):
         return cls(
@@ -147,7 +151,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
     def print_board(self):
         """ Print out the current board state
         """
-        x = self.state
+        x = deepcopy(self.state)
         # x[1][1] = '1'
         # x[2][2] = '2'
         # x[3][3] = '3'
@@ -155,6 +159,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
         # x[5][5] = '5'
         # x[6][6] = '6'
         # x[7][7] = '7'
+        # x[1][1] = '1'
         # x[8][8] = '8'
         # x[9][9] = '9'
         for i in range(1, 10):
@@ -209,7 +214,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
                 )
                 print("+" + "---+" * 8 + "---+")
 
-    def is_legal_move(self, player: str, tbl_no: int, pos_no: int, val: str):
+    def is_legal_move(self, tbl_no: int, pos_no: int):
         # init condition if board is empty
         if not self.insertion_order:
             return True
@@ -217,6 +222,15 @@ positions-->| 4   5   6 |   table2  |   table3  |
         # False when you try to insert in a finished table
         if self.finished_tables[tbl_no] != 0:
             return False
+
+        # True if the tbl_no you shall insert is already finished
+        # but the insertion is in general possible
+        last_pos = self.insertion_order[-1][1]
+        if self.finished_tables[last_pos] != 0:
+            if self.state[tbl_no][tbl_pos] == 0:
+                return True
+            else:
+                return False
 
         # if field is already used
         if self.is_used_field(tbl_no, pos_no):
@@ -311,10 +325,14 @@ positions-->| 4   5   6 |   table2  |   table3  |
                 return True
         return False
 
+    def test_legal_move(self, tbl_no: int, tbl_pos: int):
+        print(f"Table no.: {tbl_no} \t - Table_pos: {tbl_pos}")
+        print(f"Is legale move: {self.is_legal_move(tbl_no, tbl_pos)}")
+
 
 if __name__ == "__main__":
-    brd = Board()
-    # brd.print_board()
+    # brd = Board(playerA="X", playerB="Y")
+    # brd.print_board()brd.test_legal_move(1, 1)
     # brd.insert_at_pos(6, 1, "X")
     # brd.print_board()
     # brd.insert_at_pos(6, 9, "X")
@@ -330,9 +348,15 @@ if __name__ == "__main__":
         5: {i: 0 for i in range(1, 10)},
         6: {i: 0 for i in range(1, 10)},
         7: {i: 0 for i in range(1, 10)},
-        8: {i: 0 for i in range(1, 10)},
+        8: {1: "X", 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: "X"},
         9: {1: "X", 2: 0, 3: 0, 4: 0, 5: "X", 6: 0, 7: 0, 8: 0, 9: "X"},
     }
-    brd = Board.set_board(board_setting)
+    brd = Board.set_board(
+        playerA="X", playerB="Y", board_dict=board_setting, insertion_order=[[9, 9]]
+    )
     brd.print_board()
+    for tbl_no in range(1, 10):
+        for tbl_pos in range(1, 10):
+            brd.test_legal_move(tbl_no, tbl_pos)
+
     brd.player_won_on_table(9, "X")
