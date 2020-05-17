@@ -306,8 +306,38 @@ positions-->| 4   5   6 |   table2  |   table3  |
 
         # get current state for selected talble
         tbl_dict: dict = self.state[table_no]
-        # get all table positions that were assigned to a players 'X'
-        tbl_pos: List = [key for key, value in tbl_dict.items() if value == player]
+        # # get all table positions that were assigned to a players 'X'
+        # tbl_pos: List = [key for key, value in tbl_dict.items() if value == player]
+
+        self.test_winning(tbl_dict, player)
+
+        # # all possible cases to win in a table
+        # win_chances = [
+        #     [1, 5, 9],
+        #     [3, 5, 7],
+        #     [2, 5, 8],
+        #     [4, 5, 6],
+        #     [1, 2, 3],
+        #     [1, 4, 7],
+        #     [3, 6, 9],
+        #     [7, 8, 9],
+        # ]
+        # for chance in win_chances:
+        #     if all(map(lambda pos: tbl_dict[pos] == player, chance)):
+        #         return True
+        # return False
+
+    def player_won_game(self) -> str:
+        # test if playerA or playerB won the game on the current board state
+        playerA_won = test_winning(self.finished_tables, self.playerA)
+        playerB_won = test_winning(self.finished_tables, self.playerB)
+
+        if playerA_won | playerB_won:
+            return True
+        else:
+            return False
+
+    def test_winning(self, test_dic: dict, player: Any) -> bool:
 
         # all possible cases to win in a table
         win_chances = [
@@ -321,16 +351,12 @@ positions-->| 4   5   6 |   table2  |   table3  |
             [7, 8, 9],
         ]
         for chance in win_chances:
-            if all(map(lambda pos: tbl_dict[pos] == player, chance)):
+            if all(map(lambda pos: test_dic[pos] == player, chance)):
                 return True
         return False
-
     def test_legal_move(self, tbl_no: int, tbl_pos: int):
         print(f"Table no.: {tbl_no} \t - Table_pos: {tbl_pos}")
         print(f"Is legale move: {self.is_legal_move(tbl_no, tbl_pos)}")
-
-    def player_won_game(self) -> str:
-        pass
 
 
 if __name__ == "__main__":
