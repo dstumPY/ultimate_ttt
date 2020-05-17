@@ -329,6 +329,9 @@ positions-->| 4   5   6 |   table2  |   table3  |
         print(f"Table no.: {tbl_no} \t - Table_pos: {tbl_pos}")
         print(f"Is legale move: {self.is_legal_move(tbl_no, tbl_pos)}")
 
+    def player_won_game(self) -> str:
+        pass
+
 
 if __name__ == "__main__":
     # brd = Board(playerA="X", playerB="Y")
