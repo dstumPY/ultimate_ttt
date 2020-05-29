@@ -309,7 +309,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
         # # get all table positions that were assigned to a players 'X'
         # tbl_pos: List = [key for key, value in tbl_dict.items() if value == player]
 
-        self.test_winning(tbl_dict, player)
+        return test_winning(tbl_dict, player)
 
         # # all possible cases to win in a table
         # win_chances = [
@@ -327,7 +327,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
         #         return True
         # return False
 
-    def player_won_game(self) -> str:
+    def player_won_game(self) -> bool:
         # test if playerA or playerB won the game on the current board state
         playerA_won = test_winning(self.finished_tables, self.playerA)
         playerB_won = test_winning(self.finished_tables, self.playerB)
@@ -337,26 +337,28 @@ positions-->| 4   5   6 |   table2  |   table3  |
         else:
             return False
 
-    def test_winning(self, test_dic: dict, player: Any) -> bool:
-
-        # all possible cases to win in a table
-        win_chances = [
-            [1, 5, 9],
-            [3, 5, 7],
-            [2, 5, 8],
-            [4, 5, 6],
-            [1, 2, 3],
-            [1, 4, 7],
-            [3, 6, 9],
-            [7, 8, 9],
-        ]
-        for chance in win_chances:
-            if all(map(lambda pos: test_dic[pos] == player, chance)):
-                return True
-        return False
     def test_legal_move(self, tbl_no: int, tbl_pos: int):
         print(f"Table no.: {tbl_no} \t - Table_pos: {tbl_pos}")
         print(f"Is legale move: {self.is_legal_move(tbl_no, tbl_pos)}")
+
+
+def test_winning(test_dic: dict, player: Any) -> bool:
+
+    # all possible cases to win in a table
+    win_chances = [
+        [1, 5, 9],
+        [3, 5, 7],
+        [2, 5, 8],
+        [4, 5, 6],
+        [1, 2, 3],
+        [1, 4, 7],
+        [3, 6, 9],
+        [7, 8, 9],
+    ]
+    for chance in win_chances:
+        if all(map(lambda pos: test_dic[pos] == player, chance)):
+            return True
+    return False
 
 
 if __name__ == "__main__":
@@ -374,18 +376,19 @@ if __name__ == "__main__":
         2: {i: 0 for i in range(1, 10)},
         3: {i: 0 for i in range(1, 10)},
         4: {i: 0 for i in range(1, 10)},
-        5: {i: 0 for i in range(1, 10)},
+        5: {i: "X" for i in range(1, 10)},
         6: {i: 0 for i in range(1, 10)},
         7: {i: 0 for i in range(1, 10)},
-        8: {1: "X", 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: "X"},
-        9: {1: "X", 2: 0, 3: 0, 4: 0, 5: "X", 6: 0, 7: 0, 8: 0, 9: "X"},
+        8: {i: 0 for i in range(1, 10)},
+        # 9: {1: "X", 2: 0, 3: 0, 4: 0, 5: "X", 6: 0, 7: 0, 8: 0, 9: "X"},
+        9: {i: "X" for i in range(1, 10)},
     }
     brd = Board.set_board(
         playerA="X", playerB="Y", board_dict=board_setting, insertion_order=[[9, 9]]
     )
-    brd.print_board()
-    for tbl_no in range(1, 10):
-        for tbl_pos in range(1, 10):
-            brd.test_legal_move(tbl_no, tbl_pos)
+    # brd.print_board()
+    # for tbl_no in range(1, 10):
+    #     for tbl_pos in range(1, 10):
+    #         brd.test_legal_move(tbl_no, tbl_pos)
 
-    brd.player_won_on_table(9, "X")
+    print(brd.player_won_game())
