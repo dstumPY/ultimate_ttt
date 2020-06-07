@@ -65,8 +65,8 @@ positions-->| 4   5   6 |   table2  |   table3  |
 
     def __init__(
         self,
-        playerA: str,
-        playerB: str,
+        playerA: str = "X",
+        playerB: str = "O",
         board_dict: Dict = None,
         insertion_order: List = None,
     ):
@@ -140,7 +140,13 @@ positions-->| 4   5   6 |   table2  |   table3  |
             # tmp_dic = {tbl_no: }
 
     @classmethod
-    def set_board(cls, playerA: str, playerB: str, board_dict: Dict, insertion_order):
+    def set_board(
+        cls,
+        playerA: str = "X",
+        playerB: str = "O",
+        board_dict: Dict = None,
+        insertion_order=None,
+    ):
         return cls(
             playerA=playerA,
             playerB=playerB,
@@ -148,20 +154,11 @@ positions-->| 4   5   6 |   table2  |   table3  |
             insertion_order=insertion_order,
         )
 
-    def print_board(self):
+    def __str__(self):
         """ Print out the current board state
         """
         x = deepcopy(self.state)
-        # x[1][1] = '1'
-        # x[2][2] = '2'
-        # x[3][3] = '3'
-        # x[4][4] = '4'
-        # x[5][5] = '5'
-        # x[6][6] = '6'
-        # x[7][7] = '7'
-        # x[1][1] = '1'
-        # x[8][8] = '8'
-        # x[9][9] = '9'
+
         for i in range(1, 10):
             for j in range(1, 10):
                 if x[i][j] == 0:
@@ -263,7 +260,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
         """Returns True if the last move forces user to do the next move into 
             an already used tbl_no.
         """
-        next_tbl = self.insertions[-1][1]
+        next_tbl = self.insertion_order[-1][1]
         return self.finished_tables[next_tbl] is 1
 
     def last_field_eq_table(self, tbl_no: int) -> bool:
