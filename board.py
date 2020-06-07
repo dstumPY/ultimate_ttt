@@ -224,7 +224,7 @@ positions-->| 4   5   6 |   table2  |   table3  |
         # but the insertion is in general possible
         last_pos = self.insertion_order[-1][1]
         if self.finished_tables[last_pos] != 0:
-            if self.state[tbl_no][tbl_pos] == 0:
+            if self.state[tbl_no][pos_no] == 0:
                 return True
             else:
                 return False

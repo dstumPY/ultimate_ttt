@@ -1,6 +1,7 @@
 import pytest
 from board import Board
 from typing import List, Dict
+from itertools import product
 
 EMPTY_FIELD = {pos: 0 for pos in range(1, 10)}
 
@@ -83,13 +84,19 @@ def test_initboard_bystate(example_test_boards: Dict):
 
 
 def test_legal_move():
-    # create empty board for first test case
+    # create test for invalid insert
+    empty_board = Board()
+    assert empty_board.is_legal_move(1, 10) is False
+    assert empty_board.is_legal_move(10, 1) is False
+    assert empty_board.is_legal_move(10, 10) is False
+
+    # create empty board for second test case
     empty_board = Board()
     for field in range(1, 10):
         for pos in range(1, 10):
             assert empty_board.is_legal_move(field, pos) is True
 
-    # create board for second test case if a field is finished
+    # create board for third test case if a field is finished
     board_state = {i: {j: 0 for j in range(1, 10)} for i in range(1, 10)}
     board_state[1][1] = "X"
     board_state[1][5] = "X"
@@ -99,22 +106,37 @@ def test_legal_move():
     )
     for field in range(1, 10):
         for pos in range(1, 10):
-            if field == 1:
+            if field is 1:
                 assert inserted_board.is_legal_move(field, pos) is False
-            elif field == 5:
+            elif field is 5:
                 assert inserted_board.is_legal_move(field, pos) is True
             else:
                 assert inserted_board.is_legal_move(field, pos) is False
 
     # create board for second test case if a field is finished
     board_state = {i: {j: 0 for j in range(1, 10)} for i in range(1, 10)}
-    board_state[1][1] = "X"
-    board_state[1][5] = "X"
-    board_state[1][9] = "X"
-    board_state[5][1] = "X"
-    board_state[5][5] = "X"
-    board_state[5][9] = "X"
+    for field, pos in product([1, 5], [1, 5, 9]):
+        board_state[field][pos] = "X"
+
     inserted_board = Board(
         board_dict=board_state,
         insertion_order=[[5, 1], [5, 9], [5, 5], [1, 1], [1, 9], [1, 5]],
     )
+    for field in range(1, 10):
+        for pos in range(1, 10):
+            if field is 1:
+                assert inserted_board.is_legal_move(field, pos) is False
+            elif field is 5:
+                assert inserted_board.is_legal_move(field, pos) is False
+            else:
+                assert inserted_board.is_legal_move(field, pos) is True
+
+    # create test for inserting in a finished table position
+    empty_board = Board()
+    empty_board.state[9][1] = "X"
+    for field in range(1, 10):
+        for pos in range(1, 10):
+            if (field is 9) and (pos is 1):
+                assert empty_board.is_legal_move(field, pos) is False
+            else:
+                assert empty_board.is_legal_move(field, pos) is True
