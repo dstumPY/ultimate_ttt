@@ -133,10 +133,13 @@ def test_legal_move():
 
     # create test for inserting in a finished table position
     empty_board = Board()
-    empty_board.state[9][1] = "X"
+    # empty_board.state[9][1] = "X"
+    empty_board.move(9, 1, "X")
+
     for field in range(1, 10):
         for pos in range(1, 10):
             if (field is 9) and (pos is 1):
                 assert empty_board.is_legal_move(field, pos) is False
             else:
                 assert empty_board.is_legal_move(field, pos) is True
+
