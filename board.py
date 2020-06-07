@@ -231,63 +231,6 @@ class Board:
 
         return "".join(board_row_str)
 
-    # def __str__(self):
-    #     """ Print out the current board state
-    #     """
-    #     x = deepcopy(self.state)
-
-    #     for i in range(1, 10):
-    #         for j in range(1, 10):
-    #             if x[i][j] == 0:
-    #                 x[i][j] = " "
-    #             else:
-    #                 continue
-
-    #     # table top
-    #     print("+" + "---+" * 8 + "---+")
-    #     for counter in range(0, 10):
-    #         # table bottom
-    #         if counter == 9:
-    #             print("-" * 37)
-    #         # print 3x3 small tables row-wise
-    #         elif counter in [0, 3, 6]:
-    #             print(
-    #                 (
-    #                     "".join(
-    #                         [
-    #                             "|" + f" {x[j][1]}   {x[j][2]}   {x[j][3]} "
-    #                             for j in range(counter + 1, counter + 4)
-    #                         ]
-    #                         + ["|"]
-    #                     )
-    #                 )
-    #             )
-    #             print("|" + "   +" * 8 + "   |")
-    #             print(
-    #                 (
-    #                     "".join(
-    #                         [
-    #                             "|" + f" {x[j][4]}   {x[j][5]}   {x[j][6]} "
-    #                             for j in range(counter + 1, counter + 4)
-    #                         ]
-    #                         + ["|"]
-    #                     )
-    #                 )
-    #             )
-    #             print("|" + "   +" * 8 + "   |")
-    #             print(
-    #                 (
-    #                     "".join(
-    #                         [
-    #                             "|" + f" {x[j][7]}   {x[j][8]}   {x[j][9]} "
-    #                             for j in range(counter + 1, counter + 4)
-    #                         ]
-    #                         + ["|"]
-    #                     )
-    #                 )
-    #             )
-    #             print("+" + "---+" * 8 + "---+")
-
     def is_legal_move(self, tbl_no: int, pos_no: int):
         if (tbl_no not in range(1, 10)) or (pos_no not in range(1, 10)):
             return False
@@ -506,37 +449,5 @@ def start_new_game():
 
 
 if __name__ == "__main__":
-    # brd = Board(playerA="X", playerB="Y")
-    # brd.print_board()brd.test_legal_move(1, 1)
-    # brd.insert_at_pos(6, 1, "X")
-    # brd.print_board()
-    # brd.insert_at_pos(6, 9, "X")
-    # brd.print_board()
-    # brd.insert_at_pos(6, 5, "X")
-    # brd.print_board()
-
-    # board_setting = {
-    #     1: {i: 0 for i in range(1, 10)},
-    #     2: {i: 0 for i in range(1, 10)},
-    #     3: {i: 0 for i in range(1, 10)},
-    #     4: {i: 0 for i in range(1, 10)},
-    #     5: {i: "X" for i in range(1, 10)},
-    #     6: {i: 0 for i in range(1, 10)},
-    #     7: {i: 0 for i in range(1, 10)},
-    #     8: {i: 0 for i in range(1, 10)},
-    #     # 9: {1: "X", 2: 0, 3: 0, 4: 0, 5: "X", 6: 0, 7: 0, 8: 0, 9: "X"},
-    #     9: {i: "X" for i in range(1, 10)},
-    # }
-    # brd = Board.set_board(
-    #     playerA="X", playerB="Y", board_dict=board_setting, insertion_order=[[9, 9]]
-    # )
-
-    # brd.print_board()
-    # for tbl_no in range(1, 10):
-    #     for tbl_pos in range(1, 10):
-    #         brd.test_legal_move(tbl_no, tbl_pos)
-
-    # empty_board = Board()
-    # print(empty_board)
 
     start_new_game()
